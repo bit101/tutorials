@@ -6,11 +6,11 @@ I’ll be using HTML5, JavaScript and Canvas for this article, but the concepts 
 
 But, to just lay the foundations, I'm going to go over the files we're using. It's all going to be super basic. An HTML file and a JavaScript file. Here's the HTML:
 
-<script src="https://gist.github.com/bit101/f7e253f9952bd6e5a30086780c462eac.js"></script>
+<script src="https://gist.github.com/bit101/fa781939fa6f9c36fa038bb6fd604878.js"></script>
 
 A bit of CSS, my QuickSettings Panel, which might come in handy eventually, a canvas element and a link to the main script. The script is going to start out like this:
 
-<script src="https://gist.github.com/bit101/e5820b264d3e1b771714655ece44ff12.js"></script>
+<script src="https://gist.github.com/bit101/0e38522919565f652ed5be66007cc494.js"></script>
 
 All we're doing here is getting a reference to the canvas and its context, then resizing the canvas so it fills the browser window, saving the width and height values for later use. Some of the CSS in the HTML file aids in all this being fully possible.
 
@@ -20,7 +20,7 @@ So, what is a flow field? Well, you can think of a field as just a two-dimension
 
 < magnetic field image >
 
-Basically, that’s what we want to do - create a two-dimensional area where each point has a different value. But these arent just random values. A particular point has a particular value and as you move out from that point to neighboring points, you get similar, but gradually changing values. In flow fields, these values are usually interpreted as directions. So if you map your values so they are between 0 and 360, they can be directly used as degrees of direction. Of course, we'll probabl map them between 0 and 2PI radians because the computer likes that better.
+Basically, that’s what we want to do - create a two-dimensional area where each point has a different value. But these aren't just random values. A particular point has a particular value and as you move out from that point to neighboring points, you get similar, but gradually changing values. In flow fields, these values are usually interpreted as directions. So if you map your values so they are between 0 and 360, they can be directly used as degrees of direction. Of course, we'll probably map them between 0 and 2PI radians because the computer likes that better.
 
 Once we have values for each point, we can graphically render each one based on it value. For example, we can draw a line pointing in the direction associated with that value.
 
@@ -34,6 +34,14 @@ Simple as that all is, we already have the start of something interesting going 
 
 < image >
 
+You might now see why this is starting to be something you'd call a "flow field". As you follow the directions of the lines, you start to see some very directional motion going on.
+
 We can start cleaning this up a bit by extracting the two things that we've already determined are going to change a lot - the calculation of the value and how each value point is rendered. We'll put each one of those into its own function and call them where appropriate.
 
+<script src="https://gist.github.com/bit101/55745cac48a3fcd126d4716d911608f6.js"></script>
 
+No change in behavior, but we've isolated the things that we now want to change. Furthermore, we don't necessarily always want this to be in a strict grid. Instead we can grab any number of random points on the grid and render those.
+
+<script src="https://gist.github.com/bit101/45e821585e333a67fa0058aa536c20a4.js"></script>
+
+I've arbitrarily defined a value of 20,000 for number of points to render. Just looping through that many times, getting a random point and finding its value and rendering it.
