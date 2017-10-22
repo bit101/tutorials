@@ -1,4 +1,4 @@
-Maybe you’ve heard the term “flow field” and maybe you’ve seen some neat pictures or animations with the term attached. In this article, I’ll cover what a flow field is, show how to create one, and give a few examples of experimenting with them.
+Maybe you’ve heard the term “flow field” and maybe you’ve seen some neat pictures or animations with the term attached. In this article, I’ll cover what a flow field is, show how to create one, and give a few examples of experimenting with them. Flow fields are also known as vector fields. https://en.wikipedia.org/wiki/Vector_field
 
 The Pre-Game Show
 
@@ -16,9 +16,12 @@ All we're doing here is getting a reference to the canvas and its context, then 
 
 The Main Event: Flow Fields
 
-So, what is a flow field? Well, you can think of a field as just a two-dimensional area. Of course, you could have a 3D flow field, but let’s save that for another day. You can also think of a magnetic field. In this representation of a magnetic field, you see various lines and loops. The strength and orientation of the magnetic force is different in different areas of the field. 
+So, what is a flow field? Well, you can think of a field as just a two-dimensional area. Of course, you could have a 3D flow field, but let’s save that for another day. You can also think of a magnetic field.
 
-< magnetic field image >
+< Magnet0873.png >
+
+In this image of iron filings revealing a magnetic field, you see various lines and loops. The strength and orientation of the magnetic force is different in different areas of the field. You can imagine that an object moving through this field would be influenced by it and tend to move along those visible lines.
+
 
 Basically, that’s what we want to do - create a two-dimensional area where each point has a different value. But these aren't just random values. A particular point has a particular value and as you move out from that point to neighboring points, you get similar, but gradually changing values. In flow fields, these values are usually interpreted as directions. So if you map your values so they are between 0 and 360, they can be directly used as degrees of direction. Of course, we'll probably map them between 0 and 2PI radians because the computer likes that better.
 
@@ -32,7 +35,7 @@ Let's start out really simple, to get the idea of what's going on. I'm just goin
 
 Simple as that all is, we already have the start of something interesting going on.
 
-< image >
+< flow_field_01.png >
 
 You might now see why this is starting to be something you'd call a "flow field". As you follow the directions of the lines, you start to see some very directional motion going on.
 
@@ -44,4 +47,42 @@ No change in behavior, but we've isolated the things that we now want to change.
 
 <script src="https://gist.github.com/bit101/45e821585e333a67fa0058aa536c20a4.js"></script>
 
-I've arbitrarily defined a value of 20,000 for number of points to render. Just looping through that many times, getting a random point and finding its value and rendering it.
+I've arbitrarily defined a value of 20,000 for number of points to render. Just looping through that many times, getting a random point and finding its value and rendering it. I've changed a few other values as well, such as the length of the line and the scale value that (x + y) is multiplied by. Now we're getting something a bit more natural looking.
+
+< flow_field_02.png >
+
+At this point, we can just start messing with the formula we use to get the value. Generally, you're going to want to use the x and y inputs somehow, but really, just do whatever you want here. Here's a somewhat interesting one I came up with.
+
+<script src="https://gist.github.com/bit101/a9b2e15bd9849adea8bc344e9b16109a.js"></script>
+
+Just taking the sine of x and y and adding them together. Some rendering changes too: reduced the line width and varied the line length at each point. But with just those few small changes, we're onto something really hairy looking.
+
+< flow_field_03.png >
+
+Now I could spend all day iterating on this - different formulas, different parameters for the lines it's drawing etc. I know I could spend all day on it because I have spent whole days doing just that in the past. But let's move on to something else.
+
+Earlier I mentioned the idea that you could possibly imagine an object moving through a flow field and being influenced by those flows. Let's simulate that. I'll start with a single random point. Call it a particle. This particle will actually be an object with not only position, but velocity on the x and y axes. Initially these will be set to zero. On each iteration, wherever the particle is, we'll get the value at that location - which is a direction, remember - and use that value to influence the particle's velocity. Then we'll add that velocity to the position to get a new position. And repeat.
+
+<script src="https://gist.github.com/bit101/a0cf8f397e358ca7f2896342347f63d6.js"></script>
+
+Hopefully the comments explain a bit more what's going on here. This gives us the following:
+
+< flow_field_04.png >
+
+What's interesting in this case is that we no longer actually see the field. We only see the result that the field has on the motion of the particle.
+
+Do run this one on your own. It's pretty neat to watch the drawing build up over time. You can see that the flow field is influencing the way the particle moves. You can change some of those hard-coded values to see what they do to the motion. Even in just our fifth iteration here, we have a ton of things to experiment with.
+
+Let's do one more for this article. Where one particle was fun, more particles is...  more fun.
+
+<script src="https://gist.github.com/bit101/dc0bc2efb23b8abe71009f61237b1bfb.js"></script>
+
+Here, I just made an array of particles and arranged them down the left side of the screen. For the algorithm, I used a strange attractor called the "Clifford Attractor", published by Paul Bourke and attributed to Clifford Pickover. You can see the code for that here: http://paulbourke.net/fractals/clifford/ This gives you a very complex field. The parameters, a-d, are randomized at the top of the file, so you'll get a different pattern every time. 
+
+< flow_field_05.png >
+
+Again, this is one you want to run on your own and play around with. It's really quite beautiful to see in action. If you're curious what the flow field actually looks like for one of these attractors, it's something like this:
+
+< flow_field_06.png >
+
+OK, that's enough for one article. In part two, we'll look at some other ways to create fields and other ways to render them. If you want to play around with the code itself, you can either grab the gists I've embedded here, or just check out the full tutorial repo itself at https://github.com/bit101/tutorials 
