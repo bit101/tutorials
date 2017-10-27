@@ -1,0 +1,65 @@
+Flow Fields, Part II
+
+In Part I, we covered what a flow field is, and looked at a few different formulas to create a flow field. And we rendered them in a few different ways. We even animated particles being influenced by flow fields. In this article we'll cover a couple more ways to generate flow fields and some new ways to render them. As I said in the first part, the possibilities are endless. So I'm just pointing you in a few directions to get started.
+
+Perlin Noise
+
+Using simple math and minimal trigonometry gave us some pretty interesting patterns, but they wound up being very regular and repeating. The more complex function we used (the strange attractor) made for a fairly uninteresting field, but was beautiful with particles tracing lines across it.
+
+What would be nice is something complex but non-repeating. Perlin noise fits the bill just right, which is why it is so often used to create flow fields. Perlin noise was invented by Ken Perlin and was initially used to generate natural looking textures in computer generated special effects in movies and video games. It gives you random values across a two- or three-dimensional field, and ensures that there is a nice, smooth gradient between the various values. With different settings, scaling and colors applied, you can get textures that look like smoke, fire, liquid, wood grain, rusty metal, etc.
+
+We can tap into Perlin noise to create a flow field that varies all over the place and never repeats. And we can animate it as well by creating a 3D Perlin noise field and moving through slices of it on the z-axis. More on that soon.
+
+If you're using Processing or maybe some other platforms, you may have a Perlin noise function built in. If you're just using plain vanilla JavaScript like me, however, you'll need a Perlin noise library to generate the values. There are a few out there. I'm going to use one by Seph Gentle (josephg on github) at https://github.com/josephg/noisejs . I've downloaded that into my project folder.
+
+I'm going to start with the same basic HTML file as last time, and add the perlin.js library in script tag.
+
+<script src="https://gist.github.com/bit101/790a8fadf3ed5bb49ff0bff6dc1eb878.js"></script>
+
+And here's the first script file:
+
+<script src="https://gist.github.com/bit101/29b7fcda8b02cd4044c8b61c3e808e67.js"></script>
+
+The first block is the same as before. Then we seed the Perlin noise library with a random number so we'll get a new image each time, and call render.
+
+The render function loops through the canvas in a grid-like fashion as before, getting a value and drawing a line there. All pretty much the same as last time.
+
+It's the getValue function that changes. Now we're going to get the value directly from the Perlin noise function. This noise library has a few different functions. We'll use the 2d Perlin noise function, perlin2, for now. This just takes and x and a y. We'll scale it down somewhat to make a more interesting pattern. The result of this is a number from -1 to +1. So we can multiply that by 2PI to get a direction in radians. That's all, folks. And here's what it gives us:
+
+< flow_fields_2_01.png >
+
+Pretty cool, eh? Let's change the res variable to 2. This makes a much tighter grid:
+
+< flow_fields_2_02.png >
+
+And now we can see what happens if we change the scale, to maybe 0.004.
+
+< flow_fields_2_03.png >
+
+It's like zooming in.
+
+Now, consider 3d Perlin noise as a stack of these 2d Perlin flow fields layered on top of each other, each one varying just a bit. If we could flip through them, one by one, we could see them animating. That's exactly what our next file does, using the noise.perlin3 function:
+
+<script src="https://gist.github.com/bit101/6ba8b10b05ce409d9902f6c71e5d577c.js"></script>
+
+Here, we add a z variable set to zero. Then we clear the canvas at the start of render so we can redraw each time. Finally, we increase z by a very small amount and call requestAnimationFrame(render) to set up the next frame of the animation.
+
+The getValue function calls noise.perlin3, passing in the current z. No other changes. A still image would look about the same as the first image in this article, but if you actually run this one, you'll see a lovely, flowing animation, reminiscent of seaweed, or amber waves of grain. 
+
+OK, OK, what's next? Well, last time we moved on to having the flow field influence the movement of some particles. We'll do the same thing here, using the Perlin-based flow field.
+
+<script src="https://gist.github.com/bit101/34444ff6f12d0a43555da9d993f93a43.js"></script>
+
+Again, we create a column of particles on the left edge of the screen, and on each frame, update each particle's position and draw a line from its last position to where it currently is. This gives us a trail of its movement. The major change here is, again, that we're using Perlin noise to calculate the flow field. Here's what we get:
+
+< flow_fields_2_04.png >
+
+And of course, this looks even cooler as you watch it animate and build up.
+
+One last Perlin example. We'll use 3d Perlin noise again. This time, on each frame, we'll create a column of particles down the center of the canvas and iterate each one's path 500 times. That will create a bunch of flowing lines. Then we'll update z and draw the next frame. Now, the path of each particle is altered a bit differently on each frame, so you get an eerie, undulating flow going on. The further out from their source each particle gets, the more its path differs from the last frame. Sometimes it jumps off in a totally different direction, giving it a weird, glitchy feeling. The code:
+
+<script src="https://gist.github.com/bit101/49b38e727d3837c8603382276b26e252.js"></script>
+
+And a single frame of the animation, which you'll want to see in motion:
+
+< flow_fields_2_05.png >
