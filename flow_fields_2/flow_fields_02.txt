@@ -94,5 +94,5 @@ You might even be able to see a hint of the cat there. But if you uncomment line
 
 So, there's a few more ideas. Different images, different settings, different ways of rendering or animating, all make for infinite possibilities. Now you can go explore some of them. Have fun.
 
-The code for all of this can be found at: 
+The code for all of this can be found at: https://github.com/bit101/tutorials 
 
