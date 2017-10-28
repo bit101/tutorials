@@ -63,3 +63,36 @@ One last Perlin example. We'll use 3d Perlin noise again. This time, on each fra
 And a single frame of the animation, which you'll want to see in motion:
 
 < flow_fields_2_05.png >
+
+What else?
+
+Well, we've created flow fields with simple and complex formulas and used third party libraries to create them. You might want to play with the simplex noise contained in that noise library we were using. It's similar to Perlin noise, also created by Ken Perlin, but has a bit of a different feel to it.
+
+But really we can use anything we want to create a flow field. All we need is something that maps an x, y coordinate to a value. So where could we get a source of values that are mapped to x, y coordinates? Like a map of different... bits of information... like a bit... map. OK, I guess you see where I'm going here. So yeah, any image is simply a 2d map of values. If we can pass in x and y and get the value at that location, we are golden. And in HTML canvas, we can. And it's likely you can do the same thing if you are using some other system.
+
+I've created a Bitmap module. I'm not going to show it or go into it much here, but you can check out the source at the repo I'll post at the end of the article. The module takes a url and an onComplete callback that gets called when it's ready. It then has a getValue method that takes x, y parameters and returns a value between 0 and 265. This is an average of the red, green and blue values and basically equates the brightness of the image at that point.
+
+Here's how we use it:
+
+<script src="https://gist.github.com/bit101/c36724e5775c9b385274c54c9865fd76.js"></script>
+
+We create the initial canvas, but we don't size it full screen like we did before. Then we create the bitmap and wait for it to complete. When it does, we set the canvas to be the same size as the bitmap, create 1000 random points, and call render.
+
+Most of render should look pretty familiar. Get the value at the current location and use that to influence the particle's velocity. Note that I extracted a couple of values, force and friction. Playing with these can give you very different behaviors. Try out different values. The other main difference here is that if a particle goes off the canvas, we set it back to a random location again.
+
+Finally, the getValue function calls bitmap.getValue. Remember, that will return a value from 0 to 256. So we convert that to be in the range of 2PI. And that's it. 
+
+All you have to do is supply it an image. Note that for security reasons, you're not going to just link to any image from anywhere on the web, and you're probably not going to be able to run this example from the filesystem. I just set up a simple node.js based server using the http-server package and serve the app and image from there as localhost:8080.
+
+Supplying a random cat image, we get the following:
+
+< flow_fields_2_06.png >
+
+You might even be able to see a hint of the cat there. But if you uncomment line 12 in the code, it will draw the original image before starting to animate the particles. With that, you see the following:
+
+< flow_fields_2_07.png >
+
+So, there's a few more ideas. Different images, different settings, different ways of rendering or animating, all make for infinite possibilities. Now you can go explore some of them. Have fun.
+
+The code for all of this can be found at: 
+
