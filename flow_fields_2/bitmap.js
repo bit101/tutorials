@@ -1,3 +1,8 @@
+/* Note: This file isn't even vaguely production ready. I banged it together in about 15 minutes
+   and it worked well enough for my purposes. Use it for play or for inspiration, but if you're 
+   going to do anything serious with it, give it a good working over. For your own sake.
+ */
+
 var Bitmap = {
   create: function(url, onComplete) {
     var obj = Object.create(this);
