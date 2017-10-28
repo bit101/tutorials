@@ -1,18 +1,18 @@
 Flow Fields, Part II
 
-In Part I, we covered what a flow field is, and looked at a few different formulas to create a flow field. And we rendered them in a few different ways. We even animated particles being influenced by flow fields. In this article we'll cover a couple more ways to generate flow fields and some new ways to render them. As I said in the first part, the possibilities are endless. So I'm just pointing you in a few directions to get started.
+In Flow Fields, Part I, we covered what a flow field is and looked at a few different formulas to create them. And we rendered flow fields in a various ways. We even animated particles being influenced by fields. In this article we'll cover a couple more ways to generate flow fields and some new ways to render them. As I said in the first part, the possibilities are endless. I'm just pointing you in a few directions to get started.
 
 Perlin Noise
 
-Using simple math and minimal trigonometry gave us some pretty interesting patterns, but they wound up being very regular and repeating. The more complex function we used (the strange attractor) made for a fairly uninteresting field, but was beautiful with particles tracing lines across it.
+Using simple math and minimal trigonometry gave us some pretty interesting patterns, but they wound up being very regular and repeating. The more complex function we used (the strange attractor) made for a fairly uninteresting field by itself, but was beautiful with particles tracing lines across it.
 
-What would be nice is something complex but non-repeating. Perlin noise fits the bill just right, which is why it is so often used to create flow fields. Perlin noise was invented by Ken Perlin and was initially used to generate natural looking textures in computer generated special effects in movies and video games. It gives you random values across a two- or three-dimensional field, and ensures that there is a nice, smooth gradient between the various values. With different settings, scaling and colors applied, you can get textures that look like smoke, fire, liquid, wood grain, rusty metal, etc.
+What would be nice is something complex but non-repeating. Perlin noise fits the bill, which is why it is used so often to create flow fields. Perlin noise was invented by Ken Perlin and was initially used to generate natural looking textures for computer generated special effects in movies and video games. It gives you random values across a two- or three-dimensional field, and ensures that there is a nice, smooth gradient between the various values. With different settings, scaling and colors applied, you can get textures that look like smoke, fire, liquid, wood grain, rusty metal, etc.
 
 We can tap into Perlin noise to create a flow field that varies all over the place and never repeats. And we can animate it as well by creating a 3D Perlin noise field and moving through slices of it on the z-axis. More on that soon.
 
-If you're using Processing or maybe some other platforms, you may have a Perlin noise function built in. If you're just using plain vanilla JavaScript like me, however, you'll need a Perlin noise library to generate the values. There are a few out there. I'm going to use one by Seph Gentle (josephg on github) at https://github.com/josephg/noisejs . I've downloaded that into my project folder.
+If you're using Processing or some other platform, you may have a Perlin noise function built in. If you're just using plain vanilla JavaScript like me, however, you'll need a Perlin noise library to generate the values. There are a few out there. I'm going to use one by Seph Gentle (josephg on github) at https://github.com/josephg/noisejs . I've downloaded that into my project folder.
 
-I'm going to start with the same basic HTML file as last time, and add the perlin.js library in script tag.
+I'm going to start with the same basic HTML file as last time, and add the perlin.js library in the script tag.
 
 <script src="https://gist.github.com/bit101/790a8fadf3ed5bb49ff0bff6dc1eb878.js"></script>
 
@@ -24,7 +24,7 @@ The first block is the same as before. Then we seed the Perlin noise library wit
 
 The render function loops through the canvas in a grid-like fashion as before, getting a value and drawing a line there. All pretty much the same as last time.
 
-It's the getValue function that changes. Now we're going to get the value directly from the Perlin noise function. This noise library has a few different functions. We'll use the 2d Perlin noise function, perlin2, for now. This just takes and x and a y. We'll scale it down somewhat to make a more interesting pattern. The result of this is a number from -1 to +1. So we can multiply that by 2PI to get a direction in radians. That's all, folks. And here's what it gives us:
+It's the getValue function that changes. Now we're going to get the value directly from the Perlin noise function. This noise library has a few different functions. We'll use the 2d Perlin noise function, perlin2, for now. This just takes an x and a y. We'll scale it down somewhat to make a more interesting pattern. The result of this is a number from -1 to +1. So we can multiply that by 2PI to get a direction in radians. That's all, folks. And here's what it gives us:
 
 < flow_fields_2_01.png >
 
@@ -46,7 +46,7 @@ Here, we add a z variable set to zero. Then we clear the canvas at the start of 
 
 The getValue function calls noise.perlin3, passing in the current z. No other changes. A still image would look about the same as the first image in this article, but if you actually run this one, you'll see a lovely, flowing animation, reminiscent of seaweed, or amber waves of grain. 
 
-OK, OK, what's next? Well, last time we moved on to having the flow field influence the movement of some particles. We'll do the same thing here, using the Perlin-based flow field.
+OK, what's next? Well, last time we moved on to having the flow field influence the movement of some particles. We'll do the same thing here, using the Perlin-based flow field.
 
 <script src="https://gist.github.com/bit101/34444ff6f12d0a43555da9d993f93a43.js"></script>
 
@@ -68,9 +68,9 @@ What else?
 
 Well, we've created flow fields with simple and complex formulas and used third party libraries to create them. You might want to play with the simplex noise contained in that noise library we were using. It's similar to Perlin noise, also created by Ken Perlin, but has a bit of a different feel to it.
 
-But really we can use anything we want to create a flow field. All we need is something that maps an x, y coordinate to a value. So where could we get a source of values that are mapped to x, y coordinates? Like a map of different... bits of information... like a bit... map. OK, I guess you see where I'm going here. So yeah, any image is simply a 2d map of values. If we can pass in x and y and get the value at that location, we are golden. And in HTML canvas, we can. And it's likely you can do the same thing if you are using some other system.
+But really we can use anything we want to create a flow field. All we need is something that maps an x, y coordinate to a value. So where could we get a source of values that are mapped to x, y coordinates? Like a map of different... bits of information... like a bit... map. OK, I guess you see where I'm going here. So yeah, any image is simply a 2d map of values. If we can take an image and pass in x and y to some function to get the value at that location, we are golden. And in HTML canvas, we can. And it's likely you can do the same thing if you are using some other system.
 
-I've created a Bitmap module. I'm not going to show it or go into it much here, but you can check out the source at the repo I'll post at the end of the article. The module takes a url and an onComplete callback that gets called when it's ready. It then has a getValue method that takes x, y parameters and returns a value between 0 and 265. This is an average of the red, green and blue values and basically equates the brightness of the image at that point.
+I've created a Bitmap module. I'm not going to show it or go into it much here, but you can check out the source at the repo I'll post at the end of the article. The module takes a url and an onComplete callback that gets called when it's ready. It then has a getValue method that takes x, y parameters and returns a value between 0 and 255. This is an average of the red, green and blue values of that pixel and basically equates the brightness of the image at that point.
 
 Here's how we use it:
 
@@ -80,11 +80,11 @@ We create the initial canvas, but we don't size it full screen like we did befor
 
 Most of render should look pretty familiar. Get the value at the current location and use that to influence the particle's velocity. Note that I extracted a couple of values, force and friction. Playing with these can give you very different behaviors. Try out different values. The other main difference here is that if a particle goes off the canvas, we set it back to a random location again.
 
-Finally, the getValue function calls bitmap.getValue. Remember, that will return a value from 0 to 256. So we convert that to be in the range of 2PI. And that's it. 
+Finally, the getValue function calls bitmap.getValue. Remember, that will return a value from 0 to 255. So we convert that to be in the range of 2PI. And that's it. 
 
-All you have to do is supply it an image. Note that for security reasons, you're not going to just link to any image from anywhere on the web, and you're probably not going to be able to run this example from the filesystem. I just set up a simple node.js based server using the http-server package and serve the app and image from there as localhost:8080.
+All you have to do is supply it an image. Note that for security reasons, you're not going to just be able to link to any image from anywhere on the web, and you're probably not going to be able to run this example from the file system. I just set up a simple node.js based server using the http-server package and serve the app and image from there as localhost:8080.
 
-Supplying a random cat image, we get the following:
+Supplying a random cat image (because this is the Internet, after all), we get the following:
 
 < flow_fields_2_06.png >
 
@@ -94,5 +94,9 @@ You might even be able to see a hint of the cat there. But if you uncomment line
 
 So, there's a few more ideas. Different images, different settings, different ways of rendering or animating, all make for infinite possibilities. Now you can go explore some of them. Have fun.
 
-The code for all of this can be found at: https://github.com/bit101/tutorials 
+The code for all of this can be found at: https://github.com/bit101/tutorials . Note that the code here is not necessarily super clean or ruggedly tested. I'm just having fun here and pretty much just stopped when things looked good.
+
+Useful, or at least fun?
+
+I plan to use the money I make from these posts to finance my presidential campaign. Or at least pay my Netflix bill for a month or two. If you're down for helping me with either of those two things...
 
